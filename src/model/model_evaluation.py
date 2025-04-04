@@ -91,7 +91,7 @@ def evaluate_model(model, X_test: np.ndarray, y_test: np.ndarray):
 
         return report, cm
     except Exception as e:
-        logger.error('Error during model evaluation: %s', e)
+        logger.error('Errors during model evaluation: %s', e)
         raise
 
 
@@ -141,9 +141,14 @@ def main():
             for key, value in params.items():
                 mlflow.log_param(key, value)
             
+           
             # Load model and vectorizer
             model = load_model(os.path.join(root_dir, 'lgbm_model.pkl'))
             vectorizer = load_vectorizer(os.path.join(root_dir, 'tfidf_vectorizer.pkl'))
+
+            if hasattr(model,'get_params'):
+                for param_name, param_value in model.get_params().items():
+                    mlflow.log_param(param_name,param_value)
 
             # Load test data for signature inference
             test_data = load_data(os.path.join(root_dir, 'data/interim/test_processed.csv'))
