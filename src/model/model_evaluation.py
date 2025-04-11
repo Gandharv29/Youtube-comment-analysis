@@ -172,8 +172,8 @@ def main():
             )
 
             # Save model info
-            artifact_uri=mlflow.get_artifact_uri()
-            model_path = f"{artifact_uri}/lgbm_model"
+            
+            model_path = "lgbm_model"
             save_model_info(run.info.run_id, model_path, 'experiment_info.json')
 
             # Log the vectorizer as an artifact
