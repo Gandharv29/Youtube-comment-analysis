@@ -108,6 +108,7 @@ jobs:
           AWS_DEFAULT_REGION: ap-southeast-1
         run: |
           nohup python flask_app/app.py &
+          sleep 15
  
       - name: Run Flask API tests
         run: |
