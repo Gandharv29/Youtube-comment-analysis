@@ -66,10 +66,6 @@ model, vectorizer = load_model_and_vectorizer("my_model1", "2", "./tfidf_vectori
 def home():
     return "Welcome to our flask api"
 
-@app.route('/')
-def home():
-    return "Welcome to our flask api"
-
 @app.route('/predict_with_timestamps', methods=['POST'])
 def predict_with_timestamps():
     data = request.json
