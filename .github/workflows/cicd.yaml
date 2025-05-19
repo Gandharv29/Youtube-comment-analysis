@@ -114,50 +114,50 @@ jobs:
         run: |
           pytest scripts/test_flask_api.py
 
-      - name: Login to AWS ECR
-        if: success()
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 440436438107.dkr.ecr.ap-southeast-1.amazonaws.com
+      # - name: Login to AWS ECR
+      #   if: success()
+      #   run: |
+      #     aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 440436438107.dkr.ecr.ap-southeast-1.amazonaws.com
 
-      - name: Build Docker image
-        if: success()
-        run: |
-          docker build -t yt-chrome-plugin .
+      # - name: Build Docker image
+      #   if: success()
+      #   run: |
+      #     docker build -t yt-chrome-plugin .
 
-      - name: Tag Docker image
-        if: success()
-        run: |
-          docker tag yt-chrome-plugin:latest 440436438107.dkr.ecr.ap-southeast-1.amazonaws.com/yt-chrome-plugin:latest
+      # - name: Tag Docker image
+      #   if: success()
+      #   run: |
+      #     docker tag yt-chrome-plugin:latest 440436438107.dkr.ecr.ap-southeast-1.amazonaws.com/yt-chrome-plugin:latest
 
-      - name: Push Docker image to AWS ECR
-        if: success()
-        run: |
-          docker push 440436438107.dkr.ecr.ap-southeast-1.amazonaws.com/yt-chrome-plugin:latest
+      # - name: Push Docker image to AWS ECR
+      #   if: success()
+      #   run: |
+      #     docker push 440436438107.dkr.ecr.ap-southeast-1.amazonaws.com/yt-chrome-plugin:latest
       
-      # Zip the required files
-      - name: Zip files for deployment
-        if: success()
-        run: |
-          zip -r deployment.zip appspec.yml deploy/scripts/install_dependencies.sh deploy/scripts/start_docker.sh
+      # # Zip the required files
+      # - name: Zip files for deployment
+      #   if: success()
+      #   run: |
+      #     zip -r deployment.zip appspec.yml deploy/scripts/install_dependencies.sh deploy/scripts/start_docker.sh
 
-      # Upload the ZIP file to S3
-      - name: Upload ZIP to S3
-        if: success()
-        run: |
-          aws s3 cp deployment.zip s3://plugincodedeploybucket/deployment.zip
+      # # Upload the ZIP file to S3
+      # - name: Upload ZIP to S3
+      #   if: success()
+      #   run: |
+      #     aws s3 cp deployment.zip s3://plugincodedeploybucket/deployment.zip
 
-      # Deploy to AWS CodeDeploy using the uploaded ZIP file
-      - name: Deploy to AWS CodeDeploy
-        if: success()
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws deploy create-deployment \
-            --application-name YTChromePlugin \
-            --deployment-config-name CodeDeployDefault.OneAtATime \
-            --deployment-group-name YTChromePluginDeploymentGroup \
-            --s3-location bucket=plugincodedeploybucket,key=deployment.zip,bundleType=zip \
-            --file-exists-behavior OVERWRITE \
-            --region us-east-1
+      # # Deploy to AWS CodeDeploy using the uploaded ZIP file
+      # - name: Deploy to AWS CodeDeploy
+      #   if: success()
+      #   run: |
+      #     aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws deploy create-deployment \
+      #       --application-name YTChromePlugin \
+      #       --deployment-config-name CodeDeployDefault.OneAtATime \
+      #       --deployment-group-name YTChromePluginDeploymentGroup \
+      #       --s3-location bucket=plugincodedeploybucket,key=deployment.zip,bundleType=zip \
+      #       --file-exists-behavior OVERWRITE \
+      #       --region us-east-1

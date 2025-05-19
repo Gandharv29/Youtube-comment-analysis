@@ -1,19 +1,19 @@
-#How the image will be generated
+# #How the image will be generated
 
-FROM python:3.10-slim
+# FROM python:3.10-slim
 
-WORKDIR /app
+# WORKDIR /app
 
-RUN apt-get update && apt-get install -y libgomp1
+# RUN apt-get update && apt-get install -y libgomp1
 
-COPY flask_app/ /app/
+# COPY flask_app/ /app/
 
-COPY tfidf_vectorizer.pkl /app/tfidf_vectorizer.pkl
+# COPY tfidf_vectorizer.pkl /app/tfidf_vectorizer.pkl
 
-RUN pip install -r requirements.txt
+# RUN pip install -r requirements.txt
 
-RUN python -m nltk.downloader stopwords wordnet
+# RUN python -m nltk.downloader stopwords wordnet
 
-EXPOSE 5000
+# EXPOSE 5000
 
-CMD ["python", "app.py"]
+# CMD ["python", "app.py"]
